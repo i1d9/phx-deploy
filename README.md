@@ -2,13 +2,16 @@
 
 ### Set up the database
 Make sure postgres is installed
+```bash
 export DATABASE_URL=ecto://username:password@hostname/database
-
+```
+```bash
 export PHX_HOST=domain_name_or_ip_address
-
+```
 After running mix phx.gen.secret enter the generated value
+```bash
 export SECRET_KEY_BASE=VALUE_HERE
-
+```
 
 
 ### Prod.exs modifications
@@ -32,8 +35,11 @@ config :hello, HelloWeb.Endpoint,
 ```
 
 ### Set the path of the SSL certs
+```bash
 export CERTFILE=/etc/letsencrypt/live/domain_name/fullchain.pem
 export PRIVKEY=/etc/letsencrypt/live/domain_name/privkey.pem
-
+```
 ### Run the server
-  PORT=80 MIX_ENV=prod mix phx.server
+```bash
+PORT=80 MIX_ENV=prod mix phx.server
+```
