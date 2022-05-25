@@ -1,19 +1,39 @@
-# Hello
+# How to deploy a Phoenix Application 
 
-To start your Phoenix server:
+### Set up the database
+Make sure postgres is installed
+export DATABASE_URL=ecto://username:password@hostname/database
 
-  * Install dependencies with `mix deps.get`
-  * Create and migrate your database with `mix ecto.setup`
-  * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
+export PHX_HOST=domain_name_or_ip_address
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+After running mix phx.gen.secret enter the generated value
+export SECRET_KEY_BASE=VALUE_HERE
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
 
-## Learn more
 
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
+### Prod.exs modifications
+The SSL cert is  generated using certbot. For LiveView(Sockets) to work the check origin list must be filled.
+```elixir
+config :hello, HelloWeb.Endpoint,
+ cache_static_manifest: "priv/static/cache_manifest.json",
+ check_origin: [
+  "http://domain_name",
+  "https://domain_name",
+  "http://domain_name:4000",
+  "https://domain_name:4000",
+  "http://ip_address:4000",
+  "https://ip_address:4000"],
+  https: [
+    port: 443,
+    cipher_suite: :strong,
+    keyfile: System.get_env("PRIVKEY"),
+    certfile: System.get_env("CERTFILE")
+  ]
+```
+
+### Set the path of the SSL certs
+export CERTFILE=/etc/letsencrypt/live/domain_name/fullchain.pem
+export PRIVKEY=/etc/letsencrypt/live/domain_name/privkey.pem
+
+### Run the server
+  PORT=80 MIX_ENV=prod mix phx.server
